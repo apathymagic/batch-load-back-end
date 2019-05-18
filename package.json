@@ -1,0 +1,13 @@
+{
+  "name": "batch-load",
+  "version": "0.0.0",
+  "author": "Steven",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "request-promise": "^4.2.4"
+  }
+}

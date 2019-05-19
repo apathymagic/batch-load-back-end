@@ -7,13 +7,22 @@ let downloadPath;
 let pageIndex = 1;
 
 let getPage = async (url) => {
-  const data = {
-    url,
-    res: await request({
-      url: url
-    })
-  }
-  return data;
+  // try {
+    const data = {
+      url,
+      res: await request({
+        url: url,
+        method: 'GET',
+        json: true,
+        headers: {
+          'content-type': 'application/json',
+        }
+      })
+    }
+    return data;
+// } catch (err) {
+
+// }
 };
 
 let download = async (data) => {

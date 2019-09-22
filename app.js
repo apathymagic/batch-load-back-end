@@ -14,15 +14,20 @@ let app = async (URL) => {
     // Request the page of download that you need to download
     const data = await co.getPage(URL);
     console.log('********');
-    console.log(data.res);
+    // console.log(data.res);
     // Check whether images in the current page 
-    if (co.getTitle(data.res)) {
-      // Download images
-      await co.download(data.res);
-      // Download images of the next page
-      ++index;
-      const new_url = `${base_url}${start}/${index}.html`;
-      app(new_url);
+    if (true) {
+      let arr = co.getTitle(data.res);
+      arr.forEach((element) => {
+        // Download images
+        co.download(element);
+      });
+      // // Download images
+      // await co.download(data.res);
+      // // Download images of the next page
+      // ++index;
+      // const new_url = `${base_url}${start}/${index}.html`;
+      // app(new_url);
     } else {
       index = 1;
       console.log(`${base_url}${start} Current page has been download.`);
@@ -39,11 +44,11 @@ let app = async (URL) => {
   }
 };
 
-// app(base_url);
+app(base_url);
 let superagent = require('superagent');
 let charset = require('superagent-charset');
 charset(superagent);
-let request=require("request");
+let request= require("request");
 let http = require('http');
 const fs = require("fs");
 const cheerio = require("cheerio");
@@ -68,16 +73,17 @@ let saveImage = (url, path) => {
 let main = (url) => {
   request(url, async (error, res, body) => {
     parseString(res.body, function (err, result) {
-      let array = JSON.parse(JSON.stringify(result)).ListBucketResult.Contents;
-      console.log(array[0].Key);
+      let array = JSON.parse(JSON.stringify(result)).ListBucketResult;
+      console.log(array);
+      // console.log(array[0].Key);
       let $ = cheerio.load(body);
       array.forEach((i, v) => {
         if (i.Key[0].split(".")[1]=='png') {
-          saveImage(base_orin_url + i.Key[0], "image/" + i.Key[0].split("/")[i.Key[0].split("/").length-1]);
+          // saveImage(base_orin_url + i.Key[0], "image/" + i.Key[0].split("/")[i.Key[0].split("/").length-1]);
         }
       });
     })
   });
 };
 
-main(base_url);
+// main(base_url);

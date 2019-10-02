@@ -3,9 +3,9 @@ const parseString = require('xml2js').parseString;
 const fs = require('fs');
 const xmlreader = require("xmlreader");
 
-const baseUrl = "sources/BASE/";
+const baseUrl = "sources/Test/";
 
-const baseDownloadPath = "download/BASE/";
+const baseDownloadPath = "download/Test/";
 
 const baseMarginal = "marginal/"
 const specialCharts = [" ", ",", "\\."];
@@ -56,8 +56,11 @@ let read2 = (url, mds, downloadPath) => {
     start = data.indexOf("<text>")
     end = data.indexOf("</text>");
   }
-  let len = end - start + 7;
-  let parseString = data.substr(start, len);
+  let parseString = data;
+  if (start != -1 && end != -1) {
+    let len = end - start + 7;
+    parseString = data.substr(start, len);
+  }
 
   parseString = parseString.replace(new RegExp(">", "gi"), "> ");
   parseString = parseString.replace(new RegExp("</", "gi"), " </");
@@ -69,6 +72,7 @@ let read2 = (url, mds, downloadPath) => {
     for (let k in specialCharts) {
       let cmatchStr = " " + matchStr + specialCharts[k];
       let reg = new RegExp(cmatchStr, "gi");
+      parseString = parseString.replace(reg, " ");
       parseString = parseString.replace(reg, " ");
     }
   }

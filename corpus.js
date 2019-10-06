@@ -11,7 +11,7 @@ const baseUrl = "sources/" + subPath;
 const baseDownloadPath = "download/" + subPath;
 
 const baseMarginal = "marginal/"
-const specialCharts = [" ", ",", "\\."];
+const specialCharts = [" ", ",", "_", "'", "\\.", "\\?", " ", "'"];
 
 let _parseDir = (url) => {
   let dirs = fs.readdirSync(url);
@@ -50,7 +50,13 @@ let _parseMarginalWords = (url) => {
   return wds;
 }
 
-let read2 = (url, mds, downloadPath) => {
+let _replaceSpecialDoc = (str, mstr, a, b) => {
+  let cmatchStr = a + mstr + b;
+  let reg = new RegExp(cmatchStr, "gi");
+  return str.replace(reg, " ");
+}
+
+let _read2 = (url, mds, downloadPath) => {
   let data = fs.readFileSync(url).toString();
   // remove the header of xml
   let start = data.indexOf("<TEXT>");
@@ -73,11 +79,11 @@ let read2 = (url, mds, downloadPath) => {
   for (let key in mds) {
     let matchStr = mds[key];
     for (let k in specialCharts) {
-      let cmatchStr = " " + matchStr + specialCharts[k];
-      let reg = new RegExp(cmatchStr, "gi");
-      parseString = parseString.replace(reg, " ");
-      parseString = parseString.replace(reg, " ");
+      parseString = _replaceSpecialDoc(parseString, matchStr, " ", specialCharts[k]);
     }
+    // deal with special doc
+    parseString = _replaceSpecialDoc(parseString, matchStr, "\\[", "\\]");
+    parseString = _replaceSpecialDoc(parseString, matchStr,  "\\(", "\\)");
   }
   fs.appendFileSync(downloadPath, parseString);
 }
@@ -97,7 +103,7 @@ let _parseSubDir = (dirPath, mds) => {
     console.log(readPath + files[key]);
     downloadPath = downloadUrlPath + files[key];
     console.log(downloadPath);
-    read2(readPath + files[key], mds, downloadPath);
+    _read2(readPath + files[key], mds, downloadPath);
   }
 }
 
